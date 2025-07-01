@@ -144,34 +144,28 @@ async function init() {
     
     // Generate optional features
     if (answers.enableAuth) {
-      await generateAuth({
-      storeName: 'appStore',
-      collections: answers.collections,
-      roles,
-      addActivityLogging
-    });
+      await generateAuth(answers);
     }
     if (answers.enableAdmin) {
-      await generateAdmin({
-      storeName: 'appStore'
-    });
+      await generateAdmin(answers);
     }
     if (answers.enableLanding) {
       await generateLanding();
     }
     if (answers.enableLoading) {
-      await generateLoading();
+      await generateLoading(answers);
     }
     
     // Create environment template
     await fs.writeFile('.env.example', 
       `VITE_FIREBASE_API_KEY=
-VITE_FIREBASE_AUTH_DOMAIN=
-VITE_FIREBASE_PROJECT_ID=
-VITE_FIREBASE_STORAGE_BUCKET=
-VITE_FIREBASE_MESSAGING_SENDER_ID=
-VITE_FIREBASE_APP_ID=
-VITE_FIREBASE_MEASUREMENT_ID=`);
+      VITE_FIREBASE_AUTH_DOMAIN=
+      VITE_FIREBASE_PROJECT_ID=
+      VITE_FIREBASE_STORAGE_BUCKET=
+      VITE_FIREBASE_MESSAGING_SENDER_ID=
+      VITE_FIREBASE_APP_ID=
+      VITE_FIREBASE_MEASUREMENT_ID=`
+    );
     
     // Create documentation
     await createDocumentation(answers);
