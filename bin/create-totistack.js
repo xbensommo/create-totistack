@@ -220,7 +220,7 @@ async function init() {
     }
 
     // Generate the store with the structured collections data
-    await generateStore({
+    await generateStore({ 
       storeName: 'appStore',
       collections: allAnswers.collections, // Pass the structured data
       roles,
