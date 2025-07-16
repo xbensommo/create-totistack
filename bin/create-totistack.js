@@ -25,7 +25,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 console.log(chalk.cyan.bold('\n✨ Welcome to create-totistack! ✨\n'));
 
 // Define the available field types for user selection
-const FIELD_TYPES = ['string', 'number', 'boolean', 'array', 'object', 'timestamp', 'email'];
+const FIELD_TYPES = ['string', 'number', 'boolean', 'tel', 'array', 'object', 'timestamp', 'email'];
 
 /**
  * Checks if a given collection configuration represents an authentication-related collection.
@@ -35,7 +35,7 @@ const FIELD_TYPES = ['string', 'number', 'boolean', 'array', 'object', 'timestam
  * @returns {boolean} True if the collection is considered an auth collection, false otherwise.
  */
 const isAuthCollection = (collectionConfig) => {
-  const authCollections = ['users', 'user', 'customer', 'client', 'clients', 'customers', 'student', 'students', 'admins', 'admin', 'accounts', 'account'];
+  const authCollections = ['users', 'user', 'customer', 'client', 'clients', 'customers', 'student', 'students', 'admins', 'admin'];
   return authCollections.includes(collectionConfig.name.toLowerCase());
 };
 
