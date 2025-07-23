@@ -1,0 +1,142 @@
+<template>
+  <!-- Navigation -->
+  <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-20 items-center">
+        <div class="flex items-center">
+          <router-link to="/" class="flex-shrink-0 flex items-center">
+            <div class="bg-primary w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xl">TM</div>
+            <span class="ml-3 text-xl font-bold text-primary">TotiMarket</span>
+          </router-link>
+          <div class="hidden md:ml-10 md:flex md:space-x-8">
+            <router-link to="/" class="nav-link text-gray-500 hover:text-primary">Home</router-link>
+            <router-link v-if="isAuth" to="/a" class="nav-link text-gray-500 hover:text-primary">Marketplace</router-link>
+            <router-link to="/a/categories" class="nav-link text-gray-500 hover:text-primary">Categories</router-link>
+            <router-link v-if="isAuth" to="/a/my-add" class="nav-link text-gray-500 hover:text-primary">Sell</router-link>
+            <router-link v-if="isAuth" to="/a/my-listing" class="nav-link text-gray-500 hover:text-primary">My Listing</router-link>
+            <router-link to="/a/#" class="nav-link text-gray-500 hover:text-primary">About</router-link>
+          </div>
+        </div>
+        <div class="flex items-center">
+          <div class="flex items-center space-x-4">
+            <router-link to="/a/me-page" v-if="isAuth" class="text-gray-500 hover:text-primary p-2">
+              <i class="fas fa-user"></i> 
+            </router-link>
+            <router-link to="/auth" v-else class="text-gray-500 hover:text-primary p-2">
+              
+              Login
+            </router-link>
+          </div>
+          <div class="ml-4 md:hidden">
+            <button @click="openMobileMenu" class="text-gray-500 hover:text-primary p-2">
+              <i class="fas fa-bars"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Search Bar -->
+        <!-- <div v-if="currentPage == 'Market Place'" class="bg-gray-100 py-4"> -->
+        <div v-if="false" class="bg-gray-100 py-4">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex">
+                    <div class="relative flex-1">
+                        <input v-model="searchQuery" type="text" placeholder="Search products type..."
+                            class="w-full p-3 pl-10 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-accent focus:border-transparent">
+                        <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+                    </div>
+                    <button @click="applyFilters" class="bg-primary text-white px-6 rounded-r-lg">
+                        Search
+                    </button>
+                </div>
+            </div>
+        </div>
+
+  <!-- Mobile Menu -->
+  <Teleport to="body">
+    <div v-if="showMobileMenu" class="fixed inset-0 bg-black bg-opacity-50 z-50" @click.self="closeMobileMenu">
+      <div class="fixed inset-y-0 left-0 max-w-xs w-full bg-white shadow-xl p-6">
+        <div class="flex justify-between items-center mb-8">
+          <div class="flex items-center">
+            <div class="bg-primary w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xl">TM</div>
+            <span class="ml-3 text-xl font-bold text-primary">TotiMarket</span>
+          </div>
+          <button @click="closeMobileMenu" class="text-gray-500 hover:text-primary p-2">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="flex flex-col space-y-4">
+          <router-link to="/" class="text-gray-900 hover:text-accent py-2">Home</router-link>
+          <router-link v-if="isAuth" to="/a" class="text-gray-900 hover:text-accent py-2">Marketplace</router-link>
+          <router-link to="/a/categories" class="text-gray-900 hover:text-accent py-2">Categories</router-link>
+          <router-link v-if="isAuth" to="/a/my-add" class="text-gray-900 hover:text-accent py-2">Sell</router-link>
+          <router-link v-if="isAuth" to="/a/my-listing" class="text-gray-900 hover:text-accent py-2">My Listing</router-link>
+          <!-- <router-link to="/a/#" class="text-gray-900 hover:text-accent py-2">About</router-link> -->
+        </div>
+      </div>
+    </div>
+  </Teleport>
+
+  <!-- Cart -->
+  <Teleport to="body">
+    <div v-if="showCart" class="fixed inset-0 bg-black bg-opacity-50 z-50" @click.self="closeCart">
+      <div class="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl p-6">
+        <div class="flex justify-between items-center mb-8">
+          <h2 class="text-xl font-bold text-gray-900">Your Cart</h2>
+          <button @click="closeCart" class="text-gray-500 hover:text-primary p-2">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <!-- Placeholder or dynamic cart items should be rendered here -->
+        <div class="border-t pt-4">
+          <div class="flex justify-between mb-4">
+            <span class="font-bold">Subtotal:</span>
+            <span class="font-bold">N$ 0.00</span>
+          </div>
+          <button class="btn-primary w-full">
+            Proceed to Checkout
+          </button>
+        </div>
+      </div>
+    </div>
+  </Teleport>
+</template>
+
+<script setup>
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import Loader from '@/components/Loader.vue'
+
+const showMobileMenu = ref(false)
+const openMobileMenu = () => showMobileMenu.value = true
+const closeMobileMenu = () => showMobileMenu.value = false
+const route = useRoute()
+const currentPage = route.name;
+
+/*const showSearch = ref(false)
+const toggleSearch = () => showSearch.value = !showSearch.value
+const searchQuery = ref('')
+*/
+// Handle keyboard arrow scroll (for a slider container)
+const handleKeyDown = (e) => {
+  const slider = document.querySelector('.slider-container')
+  if (!slider) return
+
+  const scrollAmount = 300
+  if (e.key === 'ArrowLeft') {
+    slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' })
+  } else if (e.key === 'ArrowRight') {
+    slider.scrollBy({ left: scrollAmount, behavior: 'smooth' })
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('keydown', handleKeyDown)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleKeyDown)
+})
+</script>

@@ -1,1 +1,1 @@
-Add features to automate password, resent and link sending, email sending functions or extensions
+Add features to automate password resent and link sending, email sending functions or extensions
